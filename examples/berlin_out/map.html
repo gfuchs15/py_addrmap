@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_c812e05fb3fbecaeaf57d18729140e3c {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_c812e05fb3fbecaeaf57d18729140e3c" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_c812e05fb3fbecaeaf57d18729140e3c = L.map(
+                "map_c812e05fb3fbecaeaf57d18729140e3c",
+                {
+                    center: [52.52274680000001, 13.377990060000002],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 15,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_bcc19a06eeb68f5361b6b5b3119699ea = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u00a9 OpenStreetMap contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_bcc19a06eeb68f5361b6b5b3119699ea.addTo(map_c812e05fb3fbecaeaf57d18729140e3c);
+        
+    
+            var marker_563fc751ff9974212a180cef0670ac2b = L.marker(
+                [52.5314585, 13.386998],
+                {
+}
+            ).addTo(map_c812e05fb3fbecaeaf57d18729140e3c);
+        
+    
+        var popup_05b6e5fb9d377e857857b7f636fc829c = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_4867d7f9b6fababf046830602212bf67 = $(`<div id="html_4867d7f9b6fababf046830602212bf67" style="width: 100.0%; height: 100.0%;">Berlin<br>Invalidenstr. 12A<br>10115<br>Schmidt, Anna</div>`)[0];
+                popup_05b6e5fb9d377e857857b7f636fc829c.setContent(html_4867d7f9b6fababf046830602212bf67);
+            
+        
+
+        marker_563fc751ff9974212a180cef0670ac2b.bindPopup(popup_05b6e5fb9d377e857857b7f636fc829c)
+        ;
+
+        
+    
+    
+            var marker_941af4c6c6edc48109455b3da4eb3797 = L.marker(
+                [52.533095, 13.4144592],
+                {
+}
+            ).addTo(map_c812e05fb3fbecaeaf57d18729140e3c);
+        
+    
+        var popup_50be08276d2c6f586250d932c1f403aa = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_097acdce92b610bc71baa80775aa7f02 = $(`<div id="html_097acdce92b610bc71baa80775aa7f02" style="width: 100.0%; height: 100.0%;">Berlin<br>Kollwitzstr. 7<br>10405<br>Keller, Tom</div>`)[0];
+                popup_50be08276d2c6f586250d932c1f403aa.setContent(html_097acdce92b610bc71baa80775aa7f02);
+            
+        
+
+        marker_941af4c6c6edc48109455b3da4eb3797.bindPopup(popup_50be08276d2c6f586250d932c1f403aa)
+        ;
+
+        
+    
+    
+            var marker_d203bf94dc6d3c84014655978db20536 = L.marker(
+                [52.5029425, 13.4142022],
+                {
+}
+            ).addTo(map_c812e05fb3fbecaeaf57d18729140e3c);
+        
+    
+        var popup_ecd63f27ade9680c6f348492fb0bc013 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_72e036f045002005fa154dfb09ffef54 = $(`<div id="html_72e036f045002005fa154dfb09ffef54" style="width: 100.0%; height: 100.0%;">Berlin<br>Oranienstr. 45B<br>10997<br>Hassan, Leila</div>`)[0];
+                popup_ecd63f27ade9680c6f348492fb0bc013.setContent(html_72e036f045002005fa154dfb09ffef54);
+            
+        
+
+        marker_d203bf94dc6d3c84014655978db20536.bindPopup(popup_ecd63f27ade9680c6f348492fb0bc013)
+        ;
+
+        
+    
+    
+            var marker_dc841a1f55b317ccda2df860da515e5a = L.marker(
+                [52.506495, 13.3030217],
+                {
+}
+            ).addTo(map_c812e05fb3fbecaeaf57d18729140e3c);
+        
+    
+        var popup_a432a8d2b4d51a2c4c8425ada9713376 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_1954052c5d4556dc1a54ba38a6937b66 = $(`<div id="html_1954052c5d4556dc1a54ba38a6937b66" style="width: 100.0%; height: 100.0%;">Berlin<br>Kantstr. 102<br>10623<br>Bauer, Markus</div>`)[0];
+                popup_a432a8d2b4d51a2c4c8425ada9713376.setContent(html_1954052c5d4556dc1a54ba38a6937b66);
+            
+        
+
+        marker_dc841a1f55b317ccda2df860da515e5a.bindPopup(popup_a432a8d2b4d51a2c4c8425ada9713376)
+        ;
+
+        
+    
+    
+            var marker_57ce541f2cddf637f85d1f93d1ba04c1 = L.marker(
+                [52.539743, 13.3712692],
+                {
+}
+            ).addTo(map_c812e05fb3fbecaeaf57d18729140e3c);
+        
+    
+        var popup_6e59638a7fbc65070cc9c47846c4b98b = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_f971c65304ec9d64ea1c79a45b67ae78 = $(`<div id="html_f971c65304ec9d64ea1c79a45b67ae78" style="width: 100.0%; height: 100.0%;">Berlin<br>Müllerstr. 3<br>13347<br>Nguyen, Linh</div>`)[0];
+                popup_6e59638a7fbc65070cc9c47846c4b98b.setContent(html_f971c65304ec9d64ea1c79a45b67ae78);
+            
+        
+
+        marker_57ce541f2cddf637f85d1f93d1ba04c1.bindPopup(popup_6e59638a7fbc65070cc9c47846c4b98b)
+        ;
+
+        
+    
+</script>
+</html>

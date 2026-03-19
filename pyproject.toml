@@ -1,0 +1,24 @@
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "addrmap"
+version = "0.1.0"
+description = "Geocode and generate maps from addresses in Excel file."
+readme = "README.md"
+requires-python = ">=3.9"
+
+authors = [{name = "Guillaume Fuchs"}]
+
+dependencies = [
+    "pandas",
+    "openpyxl",
+    "geopy",
+    "folium",
+    "matplotlib"
+]
+
+[project.scripts]
+addrmap = "addrmap.main:main"

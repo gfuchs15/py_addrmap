@@ -4,8 +4,6 @@
 
 The mapping can be filtered by quarters.
 
-Copyright (c) 2026 Guillaume Fuchs - [MIT license](./LICENSE)
-
 ## Features
 - Read addresses from Excel
 - Geocode with Nominatim
@@ -30,7 +28,7 @@ example:
 addrmap[.exe] -i ./examples/berlin_addresses.xlsx -o ./examples/berlin_out
 ```
 ## Excel Format
-Columns required: Strasse, Nummer, PLZ, City, Name, Viertel.
+Following columns are required: Strasse, Nummer, PLZ, City, Name.
 
 ## Python Example
 ```python
@@ -44,6 +42,9 @@ generate_main_map(df, output_file="map.html")
 generate_quarter_maps(df, filter_col="Viertel", output_dir="./out")
 ```
 
-## Known issues
-- "A 403 Forbidden error" windows on generated maps when using default OpenStreetMap (OSM) tiles in Folium. Application has then been blocked, usually due to violating the Tile Usage Policy. It can be circonvened by using other tile providers using option '-m', e.g. '-m esri_street' of '-m cartodb'.
-- Geocode (getting latiture and longitude coordinates) can take some times, since a default delay of 2s is set espect Nominatim's usage policy. Delay can be adjusted and decreased with option, like '-min_delay_s 1'.
+## Known issues/Remarks
+- When using the default OpenStreetMap (OSM) tiles in Folium, the application may display a “403 Forbidden” error on generated maps. This typically occurs when the OSM Tile Usage Policy is violated and access to the tiles is temporarily blocked. You can avoid this issue by selecting an alternative tile provider with the `-m` option, for example: `-m esri_street` or `-m cartodb`
+- Geocoding (retrieving latitude and longitude coordinates) may take some time because a default 2‑second delay is applied to be sure to comply with Nominatim’s usage policy. You can adjust or reduce this delay using teh command line option as for example `--min_delay_s 1`.
+
+---
+Copyright (c) 2026 Guillaume Fuchs - [MIT license](./LICENSE)

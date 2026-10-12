@@ -17,7 +17,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_e897f8ecc7b216001cfff67b87c9bdb8 {
+                #map_bb5ae5b979f52ab23422feca2fb3e8d1 {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -54,14 +54,14 @@
 <body>
     
     
-            <div class="folium-map" id="map_e897f8ecc7b216001cfff67b87c9bdb8" ></div>
+            <div class="folium-map" id="map_bb5ae5b979f52ab23422feca2fb3e8d1" ></div>
         
 </body>
 <script>
     
     
-            var map_e897f8ecc7b216001cfff67b87c9bdb8 = L.map(
-                "map_e897f8ecc7b216001cfff67b87c9bdb8",
+            var map_bb5ae5b979f52ab23422feca2fb3e8d1 = L.map(
+                "map_bb5ae5b979f52ab23422feca2fb3e8d1",
                 {
                     center: [52.539743, 13.3712692],
                     crs: L.CRS.EPSG3857,
@@ -79,14 +79,14 @@
 
         
     
-            var tile_layer_1d56e5a60eb4e36d81f27e84b2580140 = L.tileLayer(
-                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+            var tile_layer_22023efa2a3a95e3c07a859e1c3d0644 = L.tileLayer(
+                "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
                 {
   "minZoom": 0,
-  "maxZoom": 19,
-  "maxNativeZoom": 19,
+  "maxZoom": 18,
+  "maxNativeZoom": 18,
   "noWrap": false,
-  "attribution": "\u00a9 OpenStreetMap contributors",
+  "attribution": "Tiles \u00a9 Esri \u2014 Source: Esri, DeLorme, NAVTEQ",
   "subdomains": "abc",
   "detectRetina": false,
   "tms": false,
@@ -96,40 +96,40 @@
             );
         
     
-            tile_layer_1d56e5a60eb4e36d81f27e84b2580140.addTo(map_e897f8ecc7b216001cfff67b87c9bdb8);
+            tile_layer_22023efa2a3a95e3c07a859e1c3d0644.addTo(map_bb5ae5b979f52ab23422feca2fb3e8d1);
         
     
-            var feature_group_1d749618cccd4a97aabae89cde950084 = L.featureGroup(
+            var feature_group_5b9d1a7347ba44cee0e37844450582ad = L.featureGroup(
                 {
 }
             );
         
     
-            var marker_b1a40aab0e619e2ceeb49265f8dc984a = L.marker(
+            var marker_4f9f1f48f0b50a72f8d90ec0faefc6fe = L.marker(
                 [52.539743, 13.3712692],
                 {
 }
-            ).addTo(feature_group_1d749618cccd4a97aabae89cde950084);
+            ).addTo(feature_group_5b9d1a7347ba44cee0e37844450582ad);
         
     
-        var popup_3e370d719b7dae31951f096c2ec3e15b = L.popup({
+        var popup_c26d2b1c8d0657b5ed4549ac59cd2bf1 = L.popup({
   "maxWidth": "100%",
 });
 
         
             
-                var html_68d58b55404d23550b21ccf347eed63e = $(`<div id="html_68d58b55404d23550b21ccf347eed63e" style="width: 100.0%; height: 100.0%;"><b>Nguyen, Linh</b><br>Müllerstr. 3<br>13347 Berlin</div>`)[0];
-                popup_3e370d719b7dae31951f096c2ec3e15b.setContent(html_68d58b55404d23550b21ccf347eed63e);
+                var html_84149c8a568cf780a8ee226c53cb60fc = $(`<div id="html_84149c8a568cf780a8ee226c53cb60fc" style="width: 100.0%; height: 100.0%;"><b>Nguyen, Linh</b><br>Müllerstr. 3<br>13347 Berlin</div>`)[0];
+                popup_c26d2b1c8d0657b5ed4549ac59cd2bf1.setContent(html_84149c8a568cf780a8ee226c53cb60fc);
             
         
 
-        marker_b1a40aab0e619e2ceeb49265f8dc984a.bindPopup(popup_3e370d719b7dae31951f096c2ec3e15b)
+        marker_4f9f1f48f0b50a72f8d90ec0faefc6fe.bindPopup(popup_c26d2b1c8d0657b5ed4549ac59cd2bf1)
         ;
 
         
     
     
-            marker_b1a40aab0e619e2ceeb49265f8dc984a.bindTooltip(
+            marker_4f9f1f48f0b50a72f8d90ec0faefc6fe.bindTooltip(
                 `<div>
                      Nguyen, Linh
                  </div>`,
@@ -139,27 +139,7 @@
             );
         
     
-            feature_group_1d749618cccd4a97aabae89cde950084.addTo(map_e897f8ecc7b216001cfff67b87c9bdb8);
-        
-    
-            var layer_control_95af04d366bc9c06ed33cf3a071ced60_layers = {
-                base_layers : {
-                    "openstreetmap" : tile_layer_1d56e5a60eb4e36d81f27e84b2580140,
-                },
-                overlays :  {
-                    "Nguyen, Linh" : feature_group_1d749618cccd4a97aabae89cde950084,
-                },
-            };
-            let layer_control_95af04d366bc9c06ed33cf3a071ced60 = L.control.layers(
-                layer_control_95af04d366bc9c06ed33cf3a071ced60_layers.base_layers,
-                layer_control_95af04d366bc9c06ed33cf3a071ced60_layers.overlays,
-                {
-  "position": "topright",
-  "collapsed": false,
-  "autoZIndex": true,
-}
-            ).addTo(map_e897f8ecc7b216001cfff67b87c9bdb8);
-
+            feature_group_5b9d1a7347ba44cee0e37844450582ad.addTo(map_bb5ae5b979f52ab23422feca2fb3e8d1);
         
 </script>
 </html>

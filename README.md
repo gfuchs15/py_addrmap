@@ -34,12 +34,12 @@ Following columns are required: Strasse, Nummer, PLZ, City, Name.
 ```python
 import pandas as pd
 from addrmap.geocoding import geocode_df
-from addrmap.mapping import generate_main_map, generate_quarter_maps
+from addrmap.mapping import generate_global_map, generate_quarter_maps
 
 df = pd.read_excel("address.xlsx")
 df = geocode_df(df)
-generate_main_map(df, output_file="map.html")
-generate_quarter_maps(df, filter_col="Viertel", output_dir="./out")
+generate_global_map(df, output_file="map.html")
+generate_filter_maps(df, filter_col="Viertel", output_dir="./out")
 ```
 
 ## Known issues/Remarks

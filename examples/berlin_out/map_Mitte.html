@@ -17,7 +17,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_f9c49eecdae5ec29a3a3852b60ff3311 {
+                #map_dc5e752091f57e80a26feb9856db013f {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -54,16 +54,16 @@
 <body>
     
     
-            <div class="folium-map" id="map_f9c49eecdae5ec29a3a3852b60ff3311" ></div>
+            <div class="folium-map" id="map_dc5e752091f57e80a26feb9856db013f" ></div>
         
 </body>
 <script>
     
     
-            var map_f9c49eecdae5ec29a3a3852b60ff3311 = L.map(
-                "map_f9c49eecdae5ec29a3a3852b60ff3311",
+            var map_dc5e752091f57e80a26feb9856db013f = L.map(
+                "map_dc5e752091f57e80a26feb9856db013f",
                 {
-                    center: [52.5314585, 13.386998],
+                    center: [52.5286468, 13.3766197],
                     crs: L.CRS.EPSG3857,
                     ...{
   "zoom": 16,
@@ -79,14 +79,14 @@
 
         
     
-            var tile_layer_27a626fe7800aaa509839f5488189b3a = L.tileLayer(
-                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+            var tile_layer_6327dc3cd9a13b853b213a67be55f8a1 = L.tileLayer(
+                "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
                 {
   "minZoom": 0,
-  "maxZoom": 19,
-  "maxNativeZoom": 19,
+  "maxZoom": 18,
+  "maxNativeZoom": 18,
   "noWrap": false,
-  "attribution": "\u00a9 OpenStreetMap contributors",
+  "attribution": "Tiles \u00a9 Esri \u2014 Source: Esri, DeLorme, NAVTEQ",
   "subdomains": "abc",
   "detectRetina": false,
   "tms": false,
@@ -96,40 +96,40 @@
             );
         
     
-            tile_layer_27a626fe7800aaa509839f5488189b3a.addTo(map_f9c49eecdae5ec29a3a3852b60ff3311);
+            tile_layer_6327dc3cd9a13b853b213a67be55f8a1.addTo(map_dc5e752091f57e80a26feb9856db013f);
         
     
-            var feature_group_597b60da782de694f016fd2e904b8b1b = L.featureGroup(
+            var feature_group_fc8594689ec6c6938454dbb606fa216b = L.featureGroup(
                 {
 }
             );
         
     
-            var marker_9fa26aa7fe525e0821dea16a3923ec24 = L.marker(
-                [52.5314585, 13.386998],
+            var marker_1ed976549f78454da3b85a19c0d7f9e5 = L.marker(
+                [52.5286468, 13.3766197],
                 {
 }
-            ).addTo(feature_group_597b60da782de694f016fd2e904b8b1b);
+            ).addTo(feature_group_fc8594689ec6c6938454dbb606fa216b);
         
     
-        var popup_603ab14223dc9cfdb37e114943e94fa4 = L.popup({
+        var popup_638f42106f7375c2ff46220fd963afc0 = L.popup({
   "maxWidth": "100%",
 });
 
         
             
-                var html_2b26c23b985eb0c36afebc47a5d78916 = $(`<div id="html_2b26c23b985eb0c36afebc47a5d78916" style="width: 100.0%; height: 100.0%;"><b>Schmidt, Anna</b><br>Invalidenstr. 12A<br>10115 Berlin</div>`)[0];
-                popup_603ab14223dc9cfdb37e114943e94fa4.setContent(html_2b26c23b985eb0c36afebc47a5d78916);
+                var html_906ef92db4de6c3ffe519ec3d13e4d82 = $(`<div id="html_906ef92db4de6c3ffe519ec3d13e4d82" style="width: 100.0%; height: 100.0%;"><b>Schmidt, Anna</b><br>Invalidenstr. 12A<br>10115 Berlin</div>`)[0];
+                popup_638f42106f7375c2ff46220fd963afc0.setContent(html_906ef92db4de6c3ffe519ec3d13e4d82);
             
         
 
-        marker_9fa26aa7fe525e0821dea16a3923ec24.bindPopup(popup_603ab14223dc9cfdb37e114943e94fa4)
+        marker_1ed976549f78454da3b85a19c0d7f9e5.bindPopup(popup_638f42106f7375c2ff46220fd963afc0)
         ;
 
         
     
     
-            marker_9fa26aa7fe525e0821dea16a3923ec24.bindTooltip(
+            marker_1ed976549f78454da3b85a19c0d7f9e5.bindTooltip(
                 `<div>
                      Schmidt, Anna
                  </div>`,
@@ -139,27 +139,7 @@
             );
         
     
-            feature_group_597b60da782de694f016fd2e904b8b1b.addTo(map_f9c49eecdae5ec29a3a3852b60ff3311);
-        
-    
-            var layer_control_a2a113a22080c2d1583d9386f9a69967_layers = {
-                base_layers : {
-                    "openstreetmap" : tile_layer_27a626fe7800aaa509839f5488189b3a,
-                },
-                overlays :  {
-                    "Schmidt, Anna" : feature_group_597b60da782de694f016fd2e904b8b1b,
-                },
-            };
-            let layer_control_a2a113a22080c2d1583d9386f9a69967 = L.control.layers(
-                layer_control_a2a113a22080c2d1583d9386f9a69967_layers.base_layers,
-                layer_control_a2a113a22080c2d1583d9386f9a69967_layers.overlays,
-                {
-  "position": "topright",
-  "collapsed": false,
-  "autoZIndex": true,
-}
-            ).addTo(map_f9c49eecdae5ec29a3a3852b60ff3311);
-
+            feature_group_fc8594689ec6c6938454dbb606fa216b.addTo(map_dc5e752091f57e80a26feb9856db013f);
         
 </script>
 </html>

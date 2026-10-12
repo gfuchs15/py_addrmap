@@ -17,7 +17,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_f073c70a0d749b5a213bbdfe8f5daeb6 {
+                #map_8bd0276c3db85d77ce9b9c353c0f0234 {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -54,14 +54,14 @@
 <body>
     
     
-            <div class="folium-map" id="map_f073c70a0d749b5a213bbdfe8f5daeb6" ></div>
+            <div class="folium-map" id="map_8bd0276c3db85d77ce9b9c353c0f0234" ></div>
         
 </body>
 <script>
     
     
-            var map_f073c70a0d749b5a213bbdfe8f5daeb6 = L.map(
-                "map_f073c70a0d749b5a213bbdfe8f5daeb6",
+            var map_8bd0276c3db85d77ce9b9c353c0f0234 = L.map(
+                "map_8bd0276c3db85d77ce9b9c353c0f0234",
                 {
                     center: [52.506495, 13.3030217],
                     crs: L.CRS.EPSG3857,
@@ -79,14 +79,14 @@
 
         
     
-            var tile_layer_127133632992e8dd09429200d06e31c5 = L.tileLayer(
-                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+            var tile_layer_9c9a48445d9e35cb7773f05f332bc926 = L.tileLayer(
+                "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
                 {
   "minZoom": 0,
-  "maxZoom": 19,
-  "maxNativeZoom": 19,
+  "maxZoom": 18,
+  "maxNativeZoom": 18,
   "noWrap": false,
-  "attribution": "\u00a9 OpenStreetMap contributors",
+  "attribution": "Tiles \u00a9 Esri \u2014 Source: Esri, DeLorme, NAVTEQ",
   "subdomains": "abc",
   "detectRetina": false,
   "tms": false,
@@ -96,40 +96,40 @@
             );
         
     
-            tile_layer_127133632992e8dd09429200d06e31c5.addTo(map_f073c70a0d749b5a213bbdfe8f5daeb6);
+            tile_layer_9c9a48445d9e35cb7773f05f332bc926.addTo(map_8bd0276c3db85d77ce9b9c353c0f0234);
         
     
-            var feature_group_8302b21b58945bf5122143672777051b = L.featureGroup(
+            var feature_group_407c9decac7372a4e5b114a8e3414220 = L.featureGroup(
                 {
 }
             );
         
     
-            var marker_d0b0dd386860d0f46ae4c4d063e3d6d8 = L.marker(
+            var marker_c6741f6d79d14f2c26b4b5a3c05b7566 = L.marker(
                 [52.506495, 13.3030217],
                 {
 }
-            ).addTo(feature_group_8302b21b58945bf5122143672777051b);
+            ).addTo(feature_group_407c9decac7372a4e5b114a8e3414220);
         
     
-        var popup_ab3db7c276d9102c46a716312aa0212b = L.popup({
+        var popup_2e6c88afa466584e95a7910e6b052c8d = L.popup({
   "maxWidth": "100%",
 });
 
         
             
-                var html_79114c1f880d4645442b6350654b5ee9 = $(`<div id="html_79114c1f880d4645442b6350654b5ee9" style="width: 100.0%; height: 100.0%;"><b>Bauer, Markus</b><br>Kantstr. 102<br>10623 Berlin</div>`)[0];
-                popup_ab3db7c276d9102c46a716312aa0212b.setContent(html_79114c1f880d4645442b6350654b5ee9);
+                var html_a1c622b546dcd1ca928dfd014d50dccc = $(`<div id="html_a1c622b546dcd1ca928dfd014d50dccc" style="width: 100.0%; height: 100.0%;"><b>Bauer, Markus</b><br>Kantstr. 102<br>10623 Berlin</div>`)[0];
+                popup_2e6c88afa466584e95a7910e6b052c8d.setContent(html_a1c622b546dcd1ca928dfd014d50dccc);
             
         
 
-        marker_d0b0dd386860d0f46ae4c4d063e3d6d8.bindPopup(popup_ab3db7c276d9102c46a716312aa0212b)
+        marker_c6741f6d79d14f2c26b4b5a3c05b7566.bindPopup(popup_2e6c88afa466584e95a7910e6b052c8d)
         ;
 
         
     
     
-            marker_d0b0dd386860d0f46ae4c4d063e3d6d8.bindTooltip(
+            marker_c6741f6d79d14f2c26b4b5a3c05b7566.bindTooltip(
                 `<div>
                      Bauer, Markus
                  </div>`,
@@ -139,27 +139,7 @@
             );
         
     
-            feature_group_8302b21b58945bf5122143672777051b.addTo(map_f073c70a0d749b5a213bbdfe8f5daeb6);
-        
-    
-            var layer_control_59117234a0741eaefb9d68115928b8b1_layers = {
-                base_layers : {
-                    "openstreetmap" : tile_layer_127133632992e8dd09429200d06e31c5,
-                },
-                overlays :  {
-                    "Bauer, Markus" : feature_group_8302b21b58945bf5122143672777051b,
-                },
-            };
-            let layer_control_59117234a0741eaefb9d68115928b8b1 = L.control.layers(
-                layer_control_59117234a0741eaefb9d68115928b8b1_layers.base_layers,
-                layer_control_59117234a0741eaefb9d68115928b8b1_layers.overlays,
-                {
-  "position": "topright",
-  "collapsed": false,
-  "autoZIndex": true,
-}
-            ).addTo(map_f073c70a0d749b5a213bbdfe8f5daeb6);
-
+            feature_group_407c9decac7372a4e5b114a8e3414220.addTo(map_8bd0276c3db85d77ce9b9c353c0f0234);
         
 </script>
 </html>

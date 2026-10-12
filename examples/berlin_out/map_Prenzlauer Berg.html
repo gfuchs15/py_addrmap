@@ -17,7 +17,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_eb276e5a6c0c3f01f74479166a40f38b {
+                #map_db43552af74939b391370e9946648742 {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -54,16 +54,16 @@
 <body>
     
     
-            <div class="folium-map" id="map_eb276e5a6c0c3f01f74479166a40f38b" ></div>
+            <div class="folium-map" id="map_db43552af74939b391370e9946648742" ></div>
         
 </body>
 <script>
     
     
-            var map_eb276e5a6c0c3f01f74479166a40f38b = L.map(
-                "map_eb276e5a6c0c3f01f74479166a40f38b",
+            var map_db43552af74939b391370e9946648742 = L.map(
+                "map_db43552af74939b391370e9946648742",
                 {
-                    center: [52.533095, 13.4144592],
+                    center: [52.5345286, 13.41605],
                     crs: L.CRS.EPSG3857,
                     ...{
   "zoom": 16,
@@ -79,14 +79,14 @@
 
         
     
-            var tile_layer_214bb4e97e6c02487ad07e68f55852e5 = L.tileLayer(
-                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+            var tile_layer_8f2876180b4ed57fc36ffed3d52ceecc = L.tileLayer(
+                "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
                 {
   "minZoom": 0,
-  "maxZoom": 19,
-  "maxNativeZoom": 19,
+  "maxZoom": 18,
+  "maxNativeZoom": 18,
   "noWrap": false,
-  "attribution": "\u00a9 OpenStreetMap contributors",
+  "attribution": "Tiles \u00a9 Esri \u2014 Source: Esri, DeLorme, NAVTEQ",
   "subdomains": "abc",
   "detectRetina": false,
   "tms": false,
@@ -96,40 +96,40 @@
             );
         
     
-            tile_layer_214bb4e97e6c02487ad07e68f55852e5.addTo(map_eb276e5a6c0c3f01f74479166a40f38b);
+            tile_layer_8f2876180b4ed57fc36ffed3d52ceecc.addTo(map_db43552af74939b391370e9946648742);
         
     
-            var feature_group_18e4de63ba270eff0e94ef4ad14a32e8 = L.featureGroup(
+            var feature_group_fbc09c3fa021a53b68b7a90fc17792d8 = L.featureGroup(
                 {
 }
             );
         
     
-            var marker_c276564050c3efa56997e1007b66fd7f = L.marker(
-                [52.533095, 13.4144592],
+            var marker_9a088b413d40f02e468e10ecdb569037 = L.marker(
+                [52.5345286, 13.41605],
                 {
 }
-            ).addTo(feature_group_18e4de63ba270eff0e94ef4ad14a32e8);
+            ).addTo(feature_group_fbc09c3fa021a53b68b7a90fc17792d8);
         
     
-        var popup_62ffa28d4cca91e05b3c18a7d7d7660d = L.popup({
+        var popup_696d837ac6bcc9995cffffbe8507dadd = L.popup({
   "maxWidth": "100%",
 });
 
         
             
-                var html_3791cc50e78abffc6d1d4157829d9f69 = $(`<div id="html_3791cc50e78abffc6d1d4157829d9f69" style="width: 100.0%; height: 100.0%;"><b>Keller, Tom</b><br>Kollwitzstr. 7<br>10405 Berlin</div>`)[0];
-                popup_62ffa28d4cca91e05b3c18a7d7d7660d.setContent(html_3791cc50e78abffc6d1d4157829d9f69);
+                var html_f00eadd67743931c0b3c15d01a3ed565 = $(`<div id="html_f00eadd67743931c0b3c15d01a3ed565" style="width: 100.0%; height: 100.0%;"><b>Keller, Tom</b><br>Kollwitzstr. 7<br>10405 Berlin</div>`)[0];
+                popup_696d837ac6bcc9995cffffbe8507dadd.setContent(html_f00eadd67743931c0b3c15d01a3ed565);
             
         
 
-        marker_c276564050c3efa56997e1007b66fd7f.bindPopup(popup_62ffa28d4cca91e05b3c18a7d7d7660d)
+        marker_9a088b413d40f02e468e10ecdb569037.bindPopup(popup_696d837ac6bcc9995cffffbe8507dadd)
         ;
 
         
     
     
-            marker_c276564050c3efa56997e1007b66fd7f.bindTooltip(
+            marker_9a088b413d40f02e468e10ecdb569037.bindTooltip(
                 `<div>
                      Keller, Tom
                  </div>`,
@@ -139,27 +139,7 @@
             );
         
     
-            feature_group_18e4de63ba270eff0e94ef4ad14a32e8.addTo(map_eb276e5a6c0c3f01f74479166a40f38b);
-        
-    
-            var layer_control_cfc875acc7ac85aec5a624f388670279_layers = {
-                base_layers : {
-                    "openstreetmap" : tile_layer_214bb4e97e6c02487ad07e68f55852e5,
-                },
-                overlays :  {
-                    "Keller, Tom" : feature_group_18e4de63ba270eff0e94ef4ad14a32e8,
-                },
-            };
-            let layer_control_cfc875acc7ac85aec5a624f388670279 = L.control.layers(
-                layer_control_cfc875acc7ac85aec5a624f388670279_layers.base_layers,
-                layer_control_cfc875acc7ac85aec5a624f388670279_layers.overlays,
-                {
-  "position": "topright",
-  "collapsed": false,
-  "autoZIndex": true,
-}
-            ).addTo(map_eb276e5a6c0c3f01f74479166a40f38b);
-
+            feature_group_fbc09c3fa021a53b68b7a90fc17792d8.addTo(map_db43552af74939b391370e9946648742);
         
 </script>
 </html>

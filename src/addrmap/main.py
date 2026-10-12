@@ -2,6 +2,8 @@ import argparse
 import pandas as pd
 import os
 import sys
+
+from .gmapping import generate_global_map_gmplot
 from .geocoding import geocode_df
 from .mapping import generate_global_map, generate_filter_maps
 
@@ -43,7 +45,7 @@ def parse_arguments():
         "-m",
         "--map_type",
         type=str,
-        default="osm",
+        default="esri_street",
         choices=["esri_street", "cartodb", "osm"],
         help="Style/Tile provider for the maps",
     )
@@ -81,6 +83,12 @@ def main():
         df,
         output_file=os.path.join(args.output_dir, "map.html"),
         map_type=args.map_type,
+    )
+
+    generate_global_map_gmplot(
+        df,
+        api_key="sasasasa",  # Replace with your actual Google Maps API key
+        output_file=os.path.join(args.output_dir, "map_gmplot.html"),
     )
 
     print("🗺️ Generating per‑quarter maps…")

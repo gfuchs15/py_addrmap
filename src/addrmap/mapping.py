@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 import folium
-
+from folium.plugins import LocateControl
 
 # ----------------------------------------------------------
 # 1. MAP TILE PROFILES (URLs + Info)
@@ -83,9 +83,7 @@ def generate_global_map(df, output_file="map.html", map_type="esri_street"):
     return df
 
 
-def generate_filter_maps(
-    df, filter_col="Viertel", output_dir="./out", map_type="esri_street"
-):
+def generate_filter_maps(df, filter_col="Viertel", output_dir="./out", map_type="osm"):
     for quarter, group in df.groupby(filter_col):
         if group.empty:
             continue
@@ -141,7 +139,72 @@ def generate_filter_maps(
                     fg.add_to(m)
 
             # Add layer control for checkboxes
-            folium.LayerControl(collapsed=False).add_to(m)
+            # folium.LayerControl(collapsed=False).add_to(m)
 
             filepath = os.path.join(output_dir, f"map_{quarter}.html")
             m.save(filepath)
+
+
+def generate_group_map(
+    df,
+    filter_col="Viertel",
+    output_file="./out/map_all.html",
+    map_type="osm",
+):
+    df_valid = df.dropna(subset=["Latitude", "Longitude"])
+    first = df_valid.iloc[0]
+
+    m = folium.Map(
+        location=[first["Latitude"], first["Longitude"]],
+        zoom_start=14,
+        tiles=TILES[map_type]["url"],
+        attr=TILES[map_type]["attr"],
+    )
+
+    # ✅ color palette (cycles automatically)
+    colors = [
+        "red",
+        "blue",
+        "green",
+        "purple",
+        "orange",
+        "darkred",
+        "cadetblue",
+        "darkgreen",
+        "pink",
+        "lightblue",
+    ]
+
+    LocateControl(auto_start=False).add_to(m)
+
+    # ✅ loop groups
+    for i, (group_name, group) in enumerate(df.groupby(filter_col)):
+        color = colors[i % len(colors)]  # cycle colors
+
+        # fg = folium.FeatureGroup(name=str(group_name), show=True)
+
+        fg = folium.FeatureGroup(
+            name=f"<span style='color:{color};'>● {group_name}</span>",
+            show=True,
+        )
+
+        for _, row in group.iterrows():
+            if pd.notna(row["Latitude"]) and pd.notna(row["Longitude"]):
+
+                folium.Marker(
+                    location=[row["Latitude"], row["Longitude"]],
+                    icon=folium.Icon(color=color),
+                    popup=(
+                        f"<b>{row['Name']}</b><br>"
+                        f"{row['Strasse']} {row['Nummer']}<br>"
+                        f"{row['PLZ']} {row['City']}"
+                    ),
+                    tooltip=row["Name"],
+                ).add_to(fg)
+
+        fg.add_to(m)
+
+    folium.LayerControl(collapsed=True).add_to(m)
+
+    m.save(output_file)
+    print(f"✅ Map saved to: {output_file}")

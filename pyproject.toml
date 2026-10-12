@@ -17,8 +17,13 @@ dependencies = [
     "openpyxl",
     "geopy",
     "folium",
-    "matplotlib"
+    "matplotlib",
+    "tqdm"
 ]
+
+[project.optional-dependencies]
+google = ["gmplot"]
+test = ["pytest"]
 
 [project.scripts]
 addrmap = "addrmap.main:main"

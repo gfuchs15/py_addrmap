@@ -1,13 +1,38 @@
+"""Folium map generation.
+
+Canonical column names: Street, Number, PostalCode, City, Name, Group,
+Latitude, Longitude (see :mod:`addrmap.constants`).
+"""
+
 import os
 
-import pandas as pd
-import matplotlib.pyplot as plt
+import matplotlib
 
+# This module only renders figures to PNG files (fig.savefig); it never opens
+# an interactive window, so pin the non-interactive Agg backend. Without this,
+# matplotlib may pick TkAgg and fail on systems without a usable Tcl/Tk.
+matplotlib.use("Agg")
+
+import matplotlib.pyplot as plt
+import pandas as pd
 import folium
 from folium.plugins import LocateControl
 
+from .constants import (
+    CITY,
+    GROUP,
+    LATITUDE,
+    LONGITUDE,
+    NAME,
+    NUMBER,
+    POSTAL_CODE,
+    STREET,
+    DEFAULT_MAP_TYPE,
+)
+from .utils import ensure_directory, get_digits, sanitize_filename  # noqa: F401 (get_digits re-exported for backwards compatibility)
+
 # ----------------------------------------------------------
-# 1. MAP TILE PROFILES (URLs + Info)
+# MAP TILE PROFILES (URLs + Info)
 # ----------------------------------------------------------
 
 TILES = {
@@ -17,7 +42,7 @@ TILES = {
         "description": "OpenStreetMap tiles, good for Germany, more detailed than standard OSM.",
         "pros": ["More detailed in Germany", "Good street names", "Free and open"],
         "cons": [
-            "Slightly slower than standard OSM",
+            "May return HTTP 403 when the map is opened via file:// (no Referer)",
             "House numbers not always complete",
         ],
     },
@@ -37,64 +62,267 @@ TILES = {
     },
 }
 
+MARKER_COLORS = [
+    "red",
+    "blue",
+    "green",
+    "purple",
+    "orange",
+    "darkred",
+    "cadetblue",
+    "darkgreen",
+    "pink",
+    "lightblue",
+]
 
-def get_digits(text):
-    return "".join(c for c in text if c.isdigit())
+DEFAULT_MARKER_ZOOM = 15
+DEFAULT_GROUP_ZOOM = 14
 
 
-def generate_global_map(df, output_file="map.html", map_type="esri_street"):
-    """generate_main_map geocodes addresses in a DataFrame and creates a global map with markers.
+def _resolve_tiles(map_type):
+    """Return the tile profile for map_type; raise ValueError if unknown."""
+    if map_type not in TILES:
+        known = ", ".join(sorted(TILES))
+        raise ValueError(f"Unknown map_type '{map_type}'. Available: {known}")
+    return TILES[map_type]
+
+
+def _build_marker_popup(row):
+    """Build the HTML popup text for one address row.
+
+    Tolerates missing optional columns.
+    """
+    lines = []
+    if NAME in row.index and pd.notna(row[NAME]):
+        lines.append(f"<b>{row[NAME]}</b>")
+    if STREET in row.index and pd.notna(row[STREET]):
+        street_line = str(row[STREET])
+        if NUMBER in row.index and pd.notna(row[NUMBER]):
+            street_line = f"{street_line} {row[NUMBER]}"
+        lines.append(street_line)
+    city_parts = []
+    if POSTAL_CODE in row.index and pd.notna(row[POSTAL_CODE]):
+        city_parts.append(str(row[POSTAL_CODE]))
+    if CITY in row.index and pd.notna(row[CITY]):
+        city_parts.append(str(row[CITY]))
+    if city_parts:
+        lines.append(" ".join(city_parts))
+    return "<br>".join(lines)
+
+
+def _marker_rows(df):
+    """Yield (index, row) for rows with valid coordinates."""
+    for idx, row in df.iterrows():
+        if pd.notna(row[LATITUDE]) and pd.notna(row[LONGITUDE]):
+            yield idx, row
+
+
+def _validate_map_input(df):
+    """Ensure the coordinate columns needed for mapping exist."""
+    from .utils import ensure_coordinate_columns
+
+    return ensure_coordinate_columns(df)
+
+
+def add_markers(map_obj, df, color=None, tooltip_column=NAME):
+    """Add one Folium marker per row with valid coordinates.
+
     Parameters
     ----------
+
+    map_obj : folium.Map
+        Map to add markers to.
     df : pd.DataFrame
-        DataFrame containing the addresses to be geocoded.
-    initial_address : str, optional
-        Initial address to center the map, by default "Eichenplatz 1, 91088 Bubenreuth, Germany"
+        Rows with canonical column names.
+    color : str | None, optional
+        Marker color; None uses Folium's default color.
+    tooltip_column : str, optional
+        Column whose value is shown as marker tooltip.
+    """
+    for _, row in _marker_rows(df):
+        marker_kwargs = {
+            "location": [row[LATITUDE], row[LONGITUDE]],
+            "popup": _build_marker_popup(row),
+        }
+        tooltip = (
+            row[tooltip_column]
+            if tooltip_column in df.columns and pd.notna(row[tooltip_column])
+            else None
+        )
+        if tooltip is not None:
+            marker_kwargs["tooltip"] = str(tooltip)
+        if color is not None:
+            marker_kwargs["icon"] = folium.Icon(color=color)
+        folium.Marker(**marker_kwargs).add_to(map_obj)
+
+
+def generate_global_map(
+    df, output_file="map.html", map_type=DEFAULT_MAP_TYPE, zoom_start=DEFAULT_MARKER_ZOOM
+):
+    """Create a single global map with one marker per address.
+
+    Parameters
+    ----------
+
+    df : pd.DataFrame
+        Data with canonical column names (Street, Number, PostalCode,
+        City, Name, Latitude, Longitude).
+    output_file : str, optional
+        Path of the HTML map to write.
+    map_type : str, optional
+        Tile profile key from :data:`TILES`.
+    zoom_start : int, optional
+        Initial zoom level.
+
     Returns
     -------
+    str
+        Absolute path of the written map file.
     """
-    tile_cfg = TILES[map_type]
+    if df.empty:
+        raise ValueError("Cannot generate a map from an empty DataFrame")
 
-    avg_lat = df["Latitude"].mean()
-    avg_lon = df["Longitude"].mean()
+    tile_profile = _resolve_tiles(map_type)
+    df = _validate_map_input(df)
 
-    m = folium.Map(
-        location=[avg_lat, avg_lon],
-        zoom_start=15,
-        tiles=tile_cfg["url"],
-        attr=tile_cfg["attr"],
+    output_dir = os.path.dirname(os.path.abspath(output_file))
+    ensure_directory(output_dir)
+
+    valid_rows = df[df[LATITUDE].notna() & df[LONGITUDE].notna()]
+    if valid_rows.empty:
+        raise ValueError(
+            "No rows with valid coordinates: run geocode_df before mapping"
+        )
+
+    center_latitude = valid_rows[LATITUDE].mean()
+    center_longitude = valid_rows[LONGITUDE].mean()
+
+    map_obj = folium.Map(
+        location=[center_latitude, center_longitude],
+        zoom_start=zoom_start,
+        tiles=tile_profile["url"],
+        attr=tile_profile["attr"],
     )
 
-    # Ensure Latitude and Longitude columns exist
-    if "Latitude" not in df.columns:
-        df["Latitude"] = None  # or np.nan, or any default value
-    if "Longitude" not in df.columns:
-        df["Longitude"] = None  # or np.nan, or any default value
+    add_markers(map_obj, valid_rows)
 
-    for idx, row in df.iterrows():
-        if pd.notna(row["Latitude"]) and pd.notna(row["Longitude"]):
-            folium.Marker(
-                location=[row["Latitude"], row["Longitude"]],
-                popup=f"{row['City']}<br>{row['Strasse']} {row['Nummer']}<br>{row['PLZ']}<br>{row['Name']}",
-            ).add_to(m)
-
-    m.save(output_file)
-
-    return df
+    map_obj.save(output_file)
+    print(f"[OK] Map saved to: {output_file}")
+    return os.path.abspath(output_file)
 
 
-def generate_filter_maps(df, filter_col="Viertel", output_dir="./out", map_type="osm"):
-    for quarter, group in df.groupby(filter_col):
-        if group.empty:
+def generate_group_map(
+    df,
+    filter_col=GROUP,
+    output_file="map_groups.html",
+    map_type=DEFAULT_MAP_TYPE,
+    zoom_start=DEFAULT_GROUP_ZOOM,
+):
+    """Create one map with a colored, toggleable feature group per group.
+
+    Parameters
+    ----------
+
+    df : pd.DataFrame
+        Data with canonical column names.
+    filter_col : str, optional
+        Column used to group addresses (e.g. Group).
+    output_file : str, optional
+        Path of the HTML map to write.
+    map_type : str, optional
+        Tile profile key from :data:`TILES`.
+    zoom_start : int, optional
+        Initial zoom level.
+
+    Returns
+    -------
+    str
+        Absolute path of the written map file.
+    """
+    if filter_col not in df.columns:
+        raise ValueError(f"Group column '{filter_col}' not found in data")
+
+    tile_profile = _resolve_tiles(map_type)
+    df = _validate_map_input(df)
+
+    output_dir = os.path.dirname(os.path.abspath(output_file))
+    ensure_directory(output_dir)
+
+    valid_rows = df[df[LATITUDE].notna() & df[LONGITUDE].notna()]
+    if valid_rows.empty:
+        raise ValueError(
+            "No rows with valid coordinates: run geocode_df before mapping"
+        )
+
+    first = valid_rows.iloc[0]
+
+    map_obj = folium.Map(
+        location=[first[LATITUDE], first[LONGITUDE]],
+        zoom_start=zoom_start,
+        tiles=tile_profile["url"],
+        attr=tile_profile["attr"],
+    )
+
+    LocateControl(auto_start=False).add_to(map_obj)
+
+    for group_index, (group_name, group_df) in enumerate(
+        valid_rows.groupby(filter_col)
+    ):
+        color = MARKER_COLORS[group_index % len(MARKER_COLORS)]
+        feature_group = folium.FeatureGroup(
+            name=f"<span style='color:{color};'>● {group_name}</span>",
+            show=True,
+        )
+        add_markers(feature_group, group_df, color=color)
+        feature_group.add_to(map_obj)
+
+    folium.LayerControl(collapsed=True).add_to(map_obj)
+
+    map_obj.save(output_file)
+    print(f"[OK] Map saved to: {output_file}")
+    return os.path.abspath(output_file)
+
+
+def generate_filter_maps(
+    df, filter_col=GROUP, output_dir="out", map_type=DEFAULT_MAP_TYPE
+):
+    """Create one map (and one PNG address table) per group.
+
+    Parameters
+    ----------
+
+    df : pd.DataFrame
+        Data with canonical column names.
+    filter_col : str, optional
+        Column used to group addresses (e.g. Group).
+    output_dir : str, optional
+        Directory to write the per-group maps and PNG tables into.
+    map_type : str, optional
+        Tile profile key from :data:`TILES`.
+
+    Returns
+    -------
+    dict
+        Mapping ``{group_name: {"html": path, "png": path}}``.
+    """
+    if filter_col not in df.columns:
+        raise ValueError(f"Filter column '{filter_col}' not found in data")
+
+    tile_profile = _resolve_tiles(map_type)
+    df = _validate_map_input(df)
+    ensure_directory(output_dir)
+
+    written_files = {}
+
+    for group_name, group_df in df.groupby(filter_col):
+        if group_df.empty:
             continue
 
-        fig, ax = plt.subplots(figsize=(8, len(group) * 0.4))
+        table_data = group_df[[STREET, NUMBER, NAME]].dropna(subset=[NAME])
+        fig, ax = plt.subplots(figsize=(8, len(group_df) * 0.4))
         ax.axis("tight")
         ax.axis("off")
-
-        table_data = group[["Strasse", "Nummer", "Name"]]
-        ax.set_title(f"{quarter} - {len(table_data)} Adressen")
-
+        ax.set_title(f"{group_name} - {len(table_data)} addresses")
         table = ax.table(
             cellText=table_data.values,
             colLabels=table_data.columns,
@@ -105,106 +333,33 @@ def generate_filter_maps(df, filter_col="Viertel", output_dir="./out", map_type=
         table.set_fontsize(12)
         table.scale(1.2, 1.2)
 
-        fig.savefig(
-            os.path.join(output_dir, f"locations_list_{quarter}.png"),
-            bbox_inches="tight",
+        png_path = os.path.join(
+            output_dir, f"locations_list_{sanitize_filename(group_name)}.png"
         )
-        plt.close()
+        fig.savefig(png_path, bbox_inches="tight")
+        plt.close(fig)
 
-        first_location = group.iloc[0]
+        valid_rows = group_df[
+            group_df[LATITUDE].notna() & group_df[LONGITUDE].notna()
+        ]
+        if valid_rows.empty:
+            print(f"[WARN] No valid coordinates for group '{group_name}', map skipped")
+            continue
 
-        if pd.notna(first_location["Latitude"]):
-            m = folium.Map(
-                location=[first_location["Latitude"], first_location["Longitude"]],
-                zoom_start=16,
-                tiles=TILES[map_type]["url"],
-                attr=TILES[map_type]["attr"],
-                user_agent="addrmap_gfuchs_v0.2",
-            )
-
-            for _, row in group.iterrows():
-                if pd.notna(row["Latitude"]) and pd.notna(row["Longitude"]):
-                    # Create a FeatureGroup with a unique name
-                    fg = folium.FeatureGroup(name=f"{row['Name']}")
-
-                    folium.Marker(
-                        location=[row["Latitude"], row["Longitude"]],
-                        popup=(
-                            f"<b>{row['Name']}</b><br>"
-                            f"{row['Strasse']} {row['Nummer']}<br>"
-                            f"{row['PLZ']} {row['City']}"
-                        ),
-                        tooltip=row["Name"],
-                    ).add_to(fg)
-                    fg.add_to(m)
-
-            # Add layer control for checkboxes
-            # folium.LayerControl(collapsed=False).add_to(m)
-
-            filepath = os.path.join(output_dir, f"map_{quarter}.html")
-            m.save(filepath)
-
-
-def generate_group_map(
-    df,
-    filter_col="Viertel",
-    output_file="./out/map_all.html",
-    map_type="osm",
-):
-    df_valid = df.dropna(subset=["Latitude", "Longitude"])
-    first = df_valid.iloc[0]
-
-    m = folium.Map(
-        location=[first["Latitude"], first["Longitude"]],
-        zoom_start=14,
-        tiles=TILES[map_type]["url"],
-        attr=TILES[map_type]["attr"],
-    )
-
-    # ✅ color palette (cycles automatically)
-    colors = [
-        "red",
-        "blue",
-        "green",
-        "purple",
-        "orange",
-        "darkred",
-        "cadetblue",
-        "darkgreen",
-        "pink",
-        "lightblue",
-    ]
-
-    LocateControl(auto_start=False).add_to(m)
-
-    # ✅ loop groups
-    for i, (group_name, group) in enumerate(df.groupby(filter_col)):
-        color = colors[i % len(colors)]  # cycle colors
-
-        # fg = folium.FeatureGroup(name=str(group_name), show=True)
-
-        fg = folium.FeatureGroup(
-            name=f"<span style='color:{color};'>● {group_name}</span>",
-            show=True,
+        first_location = valid_rows.iloc[0]
+        map_obj = folium.Map(
+            location=[first_location[LATITUDE], first_location[LONGITUDE]],
+            zoom_start=16,
+            tiles=tile_profile["url"],
+            attr=tile_profile["attr"],
         )
+        add_markers(map_obj, valid_rows)
 
-        for _, row in group.iterrows():
-            if pd.notna(row["Latitude"]) and pd.notna(row["Longitude"]):
+        html_path = os.path.join(
+            output_dir, f"map_{sanitize_filename(group_name)}.html"
+        )
+        map_obj.save(html_path)
 
-                folium.Marker(
-                    location=[row["Latitude"], row["Longitude"]],
-                    icon=folium.Icon(color=color),
-                    popup=(
-                        f"<b>{row['Name']}</b><br>"
-                        f"{row['Strasse']} {row['Nummer']}<br>"
-                        f"{row['PLZ']} {row['City']}"
-                    ),
-                    tooltip=row["Name"],
-                ).add_to(fg)
+        written_files[group_name] = {"html": html_path, "png": png_path}
 
-        fg.add_to(m)
-
-    folium.LayerControl(collapsed=True).add_to(m)
-
-    m.save(output_file)
-    print(f"✅ Map saved to: {output_file}")
+    return written_files

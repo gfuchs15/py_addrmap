@@ -205,3 +205,8 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# addrmap generated output
+out/
+out_smoke*/
+geocoded_partial.csv

@@ -229,11 +229,10 @@ def geocode_df(
         if output_csv and rows_since_save >= save_every:
             df.to_csv(output_csv)
             rows_since_save = 0
-
+    print(f"✅ Geocoded: {geocoded} - ❌ Not found or blocked: {failed}")
+    
     if output_csv:
         df.to_csv(output_csv)
         print(f"💾 Checkpoint saved to: {output_csv}")
 
-    print(f"✅ Geocoded: {geocoded}")
-    print(f"❌ Not found or blocked: {failed}")
     return df

@@ -68,11 +68,14 @@ def parse_arguments(argv=None):
     parser = argparse.ArgumentParser(
         prog="addrmap",
         description=(
-            "addrmap - Generate maps and tables from a list of addresses.\n"
+            "addrmap - Generate maps from a list of addresses.\n"
             "Reads addresses, optionally renames localized columns to English, "
-            "geocodes them, stores coordinates, generates maps and per-group "
-            "PNG tables. The output can be served via a local web server so "
-            "OpenStreetMap tiles load without '403 Forbidden' errors."
+            "geocodes them, stores coordinates, generates maps with "
+            "an interactive address list with visited checkboxes "
+            "on per-group maps, plus printable PNG address tables. "
+            "The output can be served "
+            "via a local web server so OpenStreetMap tiles load without "
+            "'403 Forbidden' errors."
         ),
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
@@ -214,9 +217,9 @@ def run_pipeline(args):
     ensure_directory(args.output_dir)
 
     if args.skip_geocode:
-        _print("[SKIP] Skipping geocoding (--skip_geocode)")
+        _print("===[SKIP] Skipping geocoding (--skip_geocode)===")
     else:
-        _print("📍 Geocoding addresses...")
+        _print("===Geocoding addresses...===")
         df = geocode_df(
             df,
             min_delay_s=args.min_delay_s,
@@ -225,10 +228,10 @@ def run_pipeline(args):
         )
 
     output_path = os.path.join(args.output_dir, "enriched_addresses.xlsx")
-    _print(f"💾 Saving enriched Excel file to: {output_path}")
+    _print(f"[OK] Saving enriched Excel file to: {output_path}")
     df.to_excel(output_path, index=False)
 
-    _print("🗺️ Generating global map...")
+    _print("===Generating global map...===")
     generate_global_map(
         df,
         output_file=os.path.join(args.output_dir, "map.html"),
@@ -236,7 +239,7 @@ def run_pipeline(args):
     )
 
     if args.filter in df.columns:
-        _print(f"🗺️ Generating per-group maps for column '{args.filter}'...")
+        _print(f"===Generating per-group maps for column '{args.filter}'...===")
         generate_group_map(
             df,
             filter_col=args.filter,
@@ -259,7 +262,7 @@ def run_pipeline(args):
             output_file=os.path.join(args.output_dir, "map_google.html"),
         )
     else:
-        _print("[SKIP] Skipping Google map (no --api_key given)")
+        _print("===[SKIP] Skipping Google map (no --api_key given)===")
 
     _print("✔ Done! All maps and tables generated.")
 

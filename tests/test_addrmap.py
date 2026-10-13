@@ -1,4 +1,5 @@
 import os
+import re
 
 import pandas as pd
 import pytest
@@ -149,9 +150,15 @@ def test_generate_filter_maps(tmp_path, sample_df):
         sample_df, filter_col=GROUP, output_dir=str(tmp_path / "groups")
     )
     assert set(written) == {"Mitte", "Kreuzberg"}
-    for entry in written.values():
+    for group, entry in written.items():
         assert os.path.exists(entry["html"])
         assert os.path.exists(entry["png"])
+        with open(entry["html"], encoding="utf-8") as handle:
+            content = handle.read()
+        assert "addrmap-list" in content
+        assert "addrmap-item" in content
+        assert "addrmap-check" in content
+        assert group in content
     assert "Prenzlauer" not in os.listdir(tmp_path / "groups")
     # Spaces in group names must be sanitized in file names
     sample_df[GROUP] = ["Mitte West", "Mitte West", "Kreuzberg"]
@@ -159,6 +166,7 @@ def test_generate_filter_maps(tmp_path, sample_df):
         sample_df, filter_col=GROUP, output_dir=str(tmp_path / "groups2")
     )
     assert os.path.exists(tmp_path / "groups2" / "map_Mitte_West.html")
+    assert os.path.exists(tmp_path / "groups2" / "locations_list_Mitte_West.png")
 
 
 def test_generate_filter_maps_skips_group_without_coordinates(tmp_path):
@@ -174,6 +182,42 @@ def test_generate_filter_maps_skips_group_without_coordinates(tmp_path):
     )
     written = generate_filter_maps(df, filter_col=GROUP, output_dir=str(tmp_path / "g"))
     assert set(written) == {"A"}
+
+
+def test_generate_filter_maps_sorts_list_by_street_and_number(tmp_path):
+    df = pd.DataFrame(
+        {
+            GROUP: ["G"] * 5,
+            STREET: ["Zedtwitzstr.", "Ackerstr.", "Ackerstr.", "Ackerstr.", "Ackerstr."],
+            NUMBER: ["10", "2", "10a", "1", "10"],
+            POSTAL_CODE: ["10115"] * 5,
+            CITY: ["Berlin"] * 5,
+            NAME: ["n3", "n1", "n2", "n0", "n4"],
+            LATITUDE: [52.0, 52.1, 52.2, 52.3, 52.4],
+            LONGITUDE: [13.0, 13.1, 13.2, 13.3, 13.4],
+        }
+    )
+    written = generate_filter_maps(
+        df, filter_col=GROUP, output_dir=str(tmp_path / "groups")
+    )
+    html = (tmp_path / "groups" / "map_G.html").read_text(encoding="utf-8")
+    entries = re.findall(r'class="addrmap-street">([^<]+)</span>', html)
+    # Order must be street name first, then natural house number.
+    assert entries == [
+        "Ackerstr. 1",
+        "Ackerstr. 2",
+        "Ackerstr. 10",
+        "Ackerstr. 10a",
+        "Zedtwitzstr. 10",
+    ]
+
+
+def test_generate_filter_maps_list_collapsed_by_default(tmp_path, sample_df):
+    written = generate_filter_maps(
+        sample_df, filter_col=GROUP, output_dir=str(tmp_path / "groups")
+    )
+    html = (tmp_path / "groups" / "map_Mitte.html").read_text(encoding="utf-8")
+    assert 'id="addrmap-list" class="addrmap-collapsed"' in html
 
 
 def test_geocode_df_missing_required_columns():
@@ -198,4 +242,9 @@ def test_run_pipeline_renames_german_columns_and_generates_maps(tmp_path):
         assert (out_dir / expected).exists(), f"missing {expected}"
     html = (out_dir / "map_groups.html").read_text(encoding="utf-8")
     assert "Mitte" in html
+    # The interactive list is off by default for global/group maps.
+    assert "addrmap-list" not in html
+    # Per-group filter maps always include the visited-checkbox list.
+    group_html = (out_dir / "map_Mitte.html").read_text(encoding="utf-8")
+    assert "addrmap-check" in group_html
     assert result is None or result

@@ -1,6 +1,6 @@
 # addrmap
 
-`addrmap` is a Python tool that reads an Excel or CSV file of addresses, geocodes them, adds latitude/longitude coordinates, generates interactive Folium maps, and produces list of addresses to print.
+`addrmap` is a Python tool that reads an Excel or CSV file of addresses, geocodes them, adds latitude/longitude coordinates, generates interactive Folium maps, and produces printable PNG address lists for each mapped group.
 
 The mapping can be filtered by quarters/groups.
 
@@ -9,7 +9,8 @@ The mapping can be filtered by quarters/groups.
 - Geocode with Nominatim (with address fallbacks, progress bar and checkpoint resume)
 - Internally uses consistent English column names: `Street`, `Number`, `PostalCode`, `City`, `Name`, `Group`, `Latitude`, `Longitude`
 - Rename localized input columns (e.g. German `Strasse`, `PLZ`, `Viertel`) automatically or via a custom mapping
-- Generate HTML maps and PNG tables with Folium
+- Generate HTML maps with Folium, including an interactive address list with visited checkboxes on per-group maps
+- Generate printable PNG address tables for each mapped group
 - CLI: `addrmap`
 
 ## Installation
